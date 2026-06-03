@@ -20,7 +20,7 @@ export class Note {
   isPinned: boolean;
 
   @ManyToMany(() => Category, (category) => category.notes, {
-    cascade: true, // cascade inserts/updates
+    cascade: ['insert', 'update'],
   })
   @JoinTable({
     name: 'note_categories',
@@ -39,3 +39,4 @@ export class Note {
   @JoinColumn({ name: 'user_id' })
   user: User;
 }
+
