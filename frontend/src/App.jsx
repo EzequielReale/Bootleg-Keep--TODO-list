@@ -148,7 +148,7 @@ function MainApp() {
           onLogout={logout}
         />
         
-        <div className="flex-1 flex flex-col relative">
+        <div className="flex-1 flex flex-col relative min-w-0">
           <MainContent
             notes={notes}
             loading={loading}

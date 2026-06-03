@@ -11,6 +11,7 @@ function NoteCard({
   onToggleCategory
 }) {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -28,10 +29,20 @@ function NoteCard({
   };
 
   return (
-    <div className={`group bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-5 hover:bg-slate-800 transition-all hover:shadow-xl hover:shadow-black/20 hover:-translate-y-1 flex flex-col h-64 relative ${showCategoryDropdown ? 'z-20' : ''}`}>
+    <div 
+      onClick={() => setIsExpanded(!isExpanded)}
+      className={`group bg-slate-800/50 backdrop-blur-sm border rounded-2xl p-5 hover:bg-slate-800 transition-all hover:shadow-xl hover:shadow-black/20 hover:-translate-y-1 flex flex-col relative cursor-pointer min-w-0 ${
+        isExpanded 
+          ? 'h-auto min-h-[16rem] border-indigo-500/50 shadow-lg shadow-indigo-500/10' 
+          : 'h-64 border-slate-700/50'
+      } ${showCategoryDropdown ? 'z-20' : ''}`}
+    >
       
       {/* Header Actions */}
-      <div className="absolute top-4 right-4 flex items-center gap-1 z-10">
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="absolute top-4 right-4 flex items-center gap-1 z-10"
+      >
         {/* Pin button (always visible if pinned, otherwise visible on hover) */}
         <button
           onClick={(e) => {
@@ -74,13 +85,18 @@ function NoteCard({
         </div>
       </div>
 
-      <h3 className="text-lg font-bold text-slate-100 mb-2 truncate pr-20">{note.title}</h3>
-      <p className="text-slate-400 text-sm flex-1 overflow-hidden line-clamp-6 leading-relaxed whitespace-pre-wrap">
+      <h3 className={`text-lg font-bold text-slate-100 mb-2 pr-20 ${isExpanded ? 'whitespace-normal' : 'truncate'}`}>{note.title}</h3>
+      <p className={`text-slate-400 text-sm flex-1 overflow-hidden leading-relaxed whitespace-pre-wrap ${
+        isExpanded ? '' : 'line-clamp-6'
+      }`}>
         {note.content}
       </p>
       
       {/* Footer / Tags */}
-      <div className="mt-4 pt-4 border-t border-slate-700/50 flex flex-wrap items-center gap-2 relative">
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="mt-4 pt-4 border-t border-slate-700/50 flex flex-wrap items-center gap-2 relative"
+      >
         {note.categories?.map(cat => (
           <span key={cat.id} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-md">
             #{cat.name}

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Plus, Loader2, Search } from 'lucide-react';
 import NoteCard from './NoteCard';
 
@@ -15,16 +16,43 @@ function MainContent({
   categories,
   onToggleNoteCategory
 }) {
+  const [colCount, setColCount] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width >= 1280) setColCount(4);      // xl
+      else if (width >= 1024) setColCount(3); // lg
+      else if (width >= 768) setColCount(2);  // md
+      else setColCount(1);                    // sm / default
+    };
+
+    handleResize(); // run on mount
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const getHeaderTitle = () => {
     if (selectedCategory) return `Notes in #${selectedCategory.name}`;
     return activeTab === 'active' ? 'My Notes' : 'Archived Notes';
   };
 
+  // Distribute notes round-robin across the columns
+  const columns = Array.from({ length: colCount }, () => []);
+  notes.forEach((note, index) => {
+    columns[index % colCount].push(note);
+  });
+
   return (
     <main className="flex-1 flex flex-col h-full bg-slate-900 overflow-y-auto">
       <header className="sticky top-0 z-10 glass px-8 py-6 flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-100">{getHeaderTitle()}</h2>
+          <h2 className="text-2xl font-semibold text-slate-100 flex items-center gap-2">
+            {getHeaderTitle()}
+            {loading && notes.length > 0 && (
+              <Loader2 className="animate-spin text-indigo-400" size={18} />
+            )}
+          </h2>
           <p className="text-sm text-slate-400 mt-1">
             {notes.length} {notes.length === 1 ? 'note' : 'notes'} found
           </p>
@@ -54,7 +82,7 @@ function MainContent({
       </header>
 
       <div className="p-8">
-        {loading ? (
+        {loading && notes.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-slate-400">
             <Loader2 className="animate-spin mb-4" size={32} />
             <p>Loading notes...</p>
@@ -68,18 +96,24 @@ function MainContent({
             <p className="text-sm mt-1">Create a new one to get started!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
-            {notes.map(note => (
-              <NoteCard
-                key={note.id}
-                note={note}
-                onEdit={() => onOpenNoteModal(note)}
-                onDelete={() => onDeleteNote(note.id)}
-                onToggleArchive={() => onToggleArchive(note)}
-                onTogglePin={() => onTogglePin(note)}
-                allCategories={categories}
-                onToggleCategory={(category, isAdding) => onToggleNoteCategory(note.id, category, isAdding)}
-              />
+          <div className={`flex gap-6 w-full items-start transition-opacity duration-200 ${
+            loading ? 'opacity-50 pointer-events-none' : ''
+          }`}>
+            {columns.map((colNotes, colIdx) => (
+              <div key={colIdx} className="flex-1 flex flex-col gap-6 min-w-0">
+                {colNotes.map(note => (
+                  <NoteCard
+                    key={note.id}
+                    note={note}
+                    onEdit={() => onOpenNoteModal(note)}
+                    onDelete={() => onDeleteNote(note.id)}
+                    onToggleArchive={() => onToggleArchive(note)}
+                    onTogglePin={() => onTogglePin(note)}
+                    allCategories={categories}
+                    onToggleCategory={(category, isAdding) => onToggleNoteCategory(note.id, category, isAdding)}
+                  />
+                ))}
+              </div>
             ))}
           </div>
         )}
