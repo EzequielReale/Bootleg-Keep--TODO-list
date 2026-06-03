@@ -41,10 +41,12 @@ export class NotesService {
       .leftJoinAndSelect('note.categories', 'category')
       .where('note.user_id = :userId', { userId });
 
-    if (status === 'active') {
-      queryBuilder.andWhere('note.isArchived = :isArchived', { isArchived: false });
-    } else if (status === 'archived') {
-      queryBuilder.andWhere('note.isArchived = :isArchived', { isArchived: true });
+    if (!categoryId) {
+      if (status === 'active') {
+        queryBuilder.andWhere('note.isArchived = :isArchived', { isArchived: false });
+      } else if (status === 'archived') {
+        queryBuilder.andWhere('note.isArchived = :isArchived', { isArchived: true });
+      }
     }
 
     if (categoryId) {
@@ -126,3 +128,4 @@ export class NotesService {
     return note;
   }
 }
+
