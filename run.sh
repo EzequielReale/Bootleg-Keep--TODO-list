@@ -33,6 +33,11 @@ BACKEND_PID=$!
 echo "🎨 Setting up frontend..."
 cd ../frontend
 
+if [ ! -f .env ]; then
+  echo "📝 Creating frontend .env file from .env.example..."
+  cp .env.example .env
+fi
+
 echo "📦 Installing frontend dependencies..."
 npm install
 
