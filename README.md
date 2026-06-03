@@ -158,6 +158,9 @@ If you prefer to start components step-by-step:
 
 ## 🌐 Live Deployment (Render / Heroku)
 
+The application has been deployed live and can be accessed at:
+👉 **[Live Frontend Application](https://hirelens-frontend-1xf3.onrender.com/)**
+
 This application is fully production-ready for deployment:
 - The database configuration checks `NODE_ENV` and automatically disables schema sync, enabling SSL connections with `rejectUnauthorized: false` to comply with cloud databases (e.g., Render PostgreSQL, Supabase).
 - Ensure `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` (or a single `DATABASE_URL`) are configured.
