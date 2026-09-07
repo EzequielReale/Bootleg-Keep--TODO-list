@@ -1,4 +1,4 @@
-# Hirelens Notes App
+# Bootleg Keep Notes App
 
 A full-stack web application for taking notes, tagging, and filtering them. It implements a pure Single Page Application (SPA) architecture with a React frontend and a NestJS backend connected to a PostgreSQL database.
 
@@ -156,10 +156,7 @@ If you prefer to start components step-by-step:
 
 ---
 
-## 🌐 Live Deployment (Render / Heroku)
-
-The application has been deployed live and can be accessed at:
-👉 **[Live Frontend Application](https://hirelens-frontend-1xf3.onrender.com/)**
+## 🌐 Deployment
 
 This application is fully production-ready for deployment:
 - The database configuration checks `NODE_ENV` and automatically disables schema sync, enabling SSL connections with `rejectUnauthorized: false` to comply with cloud databases (e.g., Render PostgreSQL, Supabase).
